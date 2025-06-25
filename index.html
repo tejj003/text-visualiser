@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Typography Art</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 100%);
+            color: white;
+            overflow: hidden;
+            cursor: crosshair;
+            font-weight: 400;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(12, 12, 24, 0.85);
+            backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0;
+            border-radius: 24px;
+            width: 340px;
+            max-height: 88vh;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .controls.minimized {
+            width: 60px;
+            background: rgba(12, 12, 24, 0.7);
+        }
+
+        .controls.minimized .controls-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .controls.minimized .controls-title,
+        .controls.minimized .controls-subtitle {
+            opacity: 0;
+        }
+
+        .controls.hidden {
+            opacity: 0.03;
+            transform: translateX(-12px);
+            backdrop-filter: blur(8px);
+        }
+
+        .controls:hover {
+            opacity: 1;
+            transform: translateX(0);
+            background: rgba(12, 12, 24, 0.9);
+            box-shadow: 
+                0 32px 64px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .controls-header {
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            position: relative;
+        }
+
+        .minimize-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .minimize-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .controls.minimized .minimize-btn {
+            top: 50%;
+            left: 50%;
+            right: auto;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+        }
+
+        .controls.minimized .controls-header {
+            padding: 16px;
+            border-bottom: none;
+        }
+
+        .controls-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: -0.3px;
+            transition: opacity 0.3s ease;
+        }
+
+        .controls-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 400;
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+            transition: opacity 0.3s ease;
+        }
+
+        .controls-content {
+            padding: 8px 0;
+            overflow-y: auto;
+            max-height: calc(88vh - 80px);
+            transition: opacity 0.3s ease;
+        }
+
+        .controls-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .controls-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .controls-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+        }
+
+        .controls-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .control-group {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .control-group:last-child {
+            border-bottom: none;
+            padding-bottom: 28px;
+        }
+
+        .control-group h3 {
+            color: #ffffff;
+            margin-bottom: 16px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-group h3::before {
+            content: '';
+            width: 3px;
+            height: 12px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            border-radius: 2px;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            color: white;
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #60a5fa;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 
+                0 0 0 3px rgba(96, 165, 250, 0.08),
+                0 4px 12px rgba(96, 165, 250, 0.1);
+            transform: translateY(-1px);
+        }
+
+        input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 14px 0;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.06);
+            outline: none;
+            -webkit-appearance: none;
+            position: relative;
+        }
+
+        input[type="range"]::-webkit-slider-track {
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            cursor: pointer;
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.2),
+                0 0 0 0 rgba(96, 165, 250, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 
+                0 4px 16px rgba(0, 0, 0, 0.3),
+                0 0 0 4px rgba(96, 165, 250, 0.2);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.05);
+        }
+
+        .range-group {
+            margin-bottom: 20px;
+        }
+
+        .range-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .range-label span:first-child {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .range-label span:last-child {
+            font-weight: 700;
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.08);
+            padding: 4px 10px;
+            border-radius: 8px;
+            min-width: 40px;
+            text-align: center;
+            font-size: 11px;
+            border: 1px solid rgba(96, 165, 250, 0.15);
+        }
+
+        .physics-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 16px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            margin: 3px 4px 3px 0;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .physics-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .physics-btn:hover::before {
+            left: 100%;
+        }
+
+        .physics-btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .physics-btn.active {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            border-color: #60a5fa;
+            color: white;
+            box-shadow: 
+                0 6px 20px rgba(96, 165, 250, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .physics-btn.active:hover {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            transform: translateY(-1px);
+            box-shadow: 
+                0 8px 24px rgba(96, 165, 250, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+
+        .preset-btn {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(168, 85, 247, 0.04));
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preset-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .preset-btn:hover::before {
+            left: 100%;
+        }
+
+        .preset-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(168, 85, 247, 0.08));
+            border-color: rgba(139, 92, 246, 0.3);
+            color: #ffffff;
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: white;
+            padding: 12px;
+        }
+
+        /* Add subtle animation to the entire controls panel */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .controls {
+            animation: slideInLeft 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        canvas {
+            display: block;
+            background: radial-gradient(circle at 30% 40%, #1a1a2e 0%, #0a0a0a 50%, #000000 100%);
+        }
+
+        .info {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .info div {
+            margin: 2px 0;
+        }
+
+        /* Improve mobile responsiveness */
+        @media (max-width: 768px) {
+            .controls {
+                left: 12px;
+                top: 12px;
+                right: 12px;
+                width: auto;
+                max-height: 75vh;
+            }
+
+            .controls.minimized {
+                width: 50px;
+                right: auto;
+                left: 12px;
+            }
+
+            .info {
+                bottom: 12px;
+                right: 12px;
+                left: 12px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <div class="controls-header">
+                <h1 class="controls-title">Physics Typography</h1>
+                <p class="controls-subtitle">Interactive text animation studio</p>
+                <button class="minimize-btn" id="minimizeBtn" title="Minimize panel">−</button>
+            </div>
+            
+            <div class="controls-content">
+                <div class="control-group">
+                    <h3>Text Input</h3>
+                    <input type="text" id="textInput" placeholder="Enter your text..." value="PHYSICS ART">
+                </div>
+
+                <div class="control-group">
+                    <h3>Physics Modes</h3>
+                    <div class="button-group">
+                        <button class="physics-btn active" data-mode="gravity">Gravity</button>
+                        <button class="physics-btn" data-mode="orbit">Orbit</button>
+                        <button class="physics-btn" data-mode="wave">Wave</button>
+                        <button class="physics-btn" data-mode="explosion">Explosion</button>
+                        <button class="physics-btn" data-mode="magnetic">Magnetic</button>
+                        <button class="physics-btn" data-mode="fluid">Fluid</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Physics Settings</h3>
+                    <div class="range-group">
+                        <div class="range-label">
+                            <span>Gravity</span>
+                            <span id="gravityValue">0.2</span>
+                        </div>
+                        <input type="range" id="gravity" min="0" max="1" step="0.01" value="0.2">
+                    </div>
+                    
+                    <div class="range-group">
+                        <div class="range-label">
+                            <span>Force</span>
+                            <span id="forceValue">5</span>
+                        </div>
+                        <input type="range" id="force" min="1" max="20" step="0.1" value="5">
+                    </div>
+                    
+                    <div class="range-group">
+                        <div class="range-label">
+                            <span>Friction</span>
+                            <span id="frictionValue">0.98</span>
+                        </div>
+                        <input type="range" id="friction" min="0.9" max="0.99" step="0.001" value="0.98">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Visual Settings</h3>
+                    <div class="range-group">
+                        <div class="range-label">
+                            <span>Font Size</span>
+                            <span id="fontSizeValue">40</span>
+                        </div>
+                        <input type="range" id="fontSize" min="20" max="120" value="40">
+                    </div>
+                    
+                    <div class="range-group">
+                        <div class="range-label">
+                            <span>Particle Count</span>
+                            <span id="particleCountValue">50</span>
+                        </div>
+                        <input type="range" id="particleCount" min="10" max="200" value="50">
+                    </div>
+                    
+                    <select id="fontFamily">
+                        <option value="Inter">Inter</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Impact">Impact</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Verdana">Verdana</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <h3>Color Modes</h3>
+                    <div class="button-group">
+                        <button class="physics-btn" data-color="rainbow">Rainbow</button>
+                        <button class="physics-btn" data-color="fire">Fire</button>
+                        <button class="physics-btn" data-color="ice">Ice</button>
+                        <button class="physics-btn" data-color="neon">Neon</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Presets</h3>
+                    <div class="preset-grid">
+                        <button class="preset-btn" data-preset="galaxy">Galaxy</button>
+                        <button class="preset-btn" data-preset="storm">Storm</button>
+                        <button class="preset-btn" data-preset="dance">Dance</button>
+                        <button class="preset-btn" data-preset="zen">Zen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="canvas"></canvas>
+
+        <div class="info">
+            <div><strong>Controls:</strong></div>
+            <div>Click and drag to interact</div>
+            <div>Mouse wheel to zoom</div>
+            <div>Space to reset</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Physics variables
+        let particles = [];
+        let mouse = { x: 0, y: 0, down: false };
+        let physicsMode = 'gravity';
+        let colorMode = 'rainbow';
+        let time = 0;
+
+        // Settings
+        let settings = {
+            gravity: 0.2,
+            force: 5,
+            friction: 0.98,
+            fontSize: 40,
+            particleCount: 50,
+            fontFamily: 'Inter'
+        };
+
+        class Particle {
+            constructor(x, y, char, index) {
+                this.originalX = x;
+                this.originalY = y;
+                this.x = x + (Math.random() - 0.5) * 200;
+                this.y = y + (Math.random() - 0.5) * 200;
+                this.vx = (Math.random() - 0.5) * 10;
+                this.vy = (Math.random() - 0.5) * 10;
+                this.char = char;
+                this.index = index;
+                this.life = 1;
+                this.size = settings.fontSize;
+                this.angle = 0;
+                this.angularVelocity = (Math.random() - 0.5) * 0.1;
+            }
+
+            update() {
+                time += 0.01;
+                
+                switch(physicsMode) {
+                    case 'gravity':
+                        this.applyGravity();
+                        break;
+                    case 'orbit':
+                        this.applyOrbit();
+                        break;
+                    case 'wave':
+                        this.applyWave();
+                        break;
+                    case 'explosion':
+                        this.applyExplosion();
+                        break;
+                    case 'magnetic':
+                        this.applyMagnetic();
+                        break;
+                    case 'fluid':
+                        this.applyFluid();
+                        break;
+                }
+
+                // Apply mouse interaction
+                if (mouse.down) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 100) {
+                        const force = (100 - distance) / 100 * settings.force;
+                        this.vx += (dx / distance) * force * 0.1;
+                        this.vy += (dy / distance) * force * 0.1;
+                    }
+                }
+
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Apply friction
+                this.vx *= settings.friction;
+                this.vy *= settings.friction;
+                
+                // Update angle
+                this.angle += this.angularVelocity;
+                
+                // Boundary bounce
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -0.8;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -0.8;
+                
+                this.x = Math.max(0, Math.min(canvas.width, this.x));
+                this.y = Math.max(0, Math.min(canvas.height, this.y));
+            }
+
+            applyGravity() {
+                this.vy += settings.gravity;
+                
+                // Attract to original position
+                const dx = this.originalX - this.x;
+                const dy = this.originalY - this.y;
+                this.vx += dx * 0.001;
+                this.vy += dy * 0.001;
+            }
+
+            applyOrbit() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const dx = this.x - centerX;
+                const dy = this.y - centerY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 0) {
+                    const force = settings.force * 0.1;
+                    this.vx += -dy / distance * force;
+                    this.vy += dx / distance * force;
+                }
+            }
+
+            applyWave() {
+                const waveX = Math.sin(time + this.index * 0.1) * 2;
+                const waveY = Math.cos(time * 0.5 + this.index * 0.05) * 1;
+                
+                this.vx += waveX;
+                this.vy += waveY;
+                
+                // Return to original position
+                const dx = this.originalX - this.x;
+                const dy = this.originalY - this.y;
+                this.vx += dx * 0.01;
+                this.vy += dy * 0.01;
+            }
+
+            applyExplosion() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const dx = this.x - centerX;
+                const dy = this.y - centerY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 0) {
+                    const force = settings.force * 0.1;
+                    this.vx += (dx / distance) * force;
+                    this.vy += (dy / distance) * force;
+                }
+            }
+
+            applyMagnetic() {
+                // Attract to mouse
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 0) {
+                    const force = settings.force * 0.001;
+                    this.vx += (dx / distance) * force;
+                    this.vy += (dy / distance) * force;
+                }
+            }
+
+            applyFluid() {
+                // Fluid-like motion
+                this.vx += (Math.random() - 0.5) * 0.5;
+                this.vy += (Math.random() - 0.5) * 0.5;
+                
+                // Viscosity
+                this.vx *= 0.95;
+                this.vy *= 0.95;
+                
+                // Gentle return to original
+                const dx = this.originalX - this.x;
+                const dy = this.originalY - this.y;
+                this.vx += dx * 0.005;
+                this.vy += dy * 0.005;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                
+                // Set color based on mode
+                ctx.fillStyle = this.getColor();
+                ctx.font = `${this.size}px ${settings.fontFamily}`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // Add glow effect
+                ctx.shadowColor = ctx.fillStyle;
+                ctx.shadowBlur = 10;
+                
+                ctx.fillText(this.char, 0, 0);
+                ctx.restore();
+            }
+
+            getColor() {
+                const t = time + this.index * 0.1;
+                
+                switch(colorMode) {
+                    case 'rainbow':
+                        const hue = (t * 50 + this.index * 10) % 360;
+                        return `hsl(${hue}, 70%, 60%)`;
+                    case 'fire':
+                        const fireHue = Math.sin(t) * 30 + 15;
+                        return `hsl(${fireHue}, 90%, 60%)`;
+                    case 'ice':
+                        const iceHue = 200 + Math.sin(t) * 50;
+                        return `hsl(${iceHue}, 70%, 70%)`;
+                    case 'neon':
+                        const neonColors = ['#ff00ff', '#00ffff', '#ffff00', '#ff0080'];
+                        return neonColors[this.index % neonColors.length];
+                    default:
+                        return '#64ffda';
+                }
+            }
+        }
+
+        function createParticles() {
+            particles = [];
+            const text = document.getElementById('textInput').value || 'PHYSICS';
+            
+            // Create temporary canvas to measure text
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.font = `${settings.fontSize}px ${settings.fontFamily}`;
+            
+            const textWidth = tempCtx.measureText(text).width;
+            const startX = (canvas.width - textWidth) / 2;
+            const startY = canvas.height / 2;
+            
+            let x = startX;
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const charWidth = tempCtx.measureText(char).width;
+                
+                if (char !== ' ') {
+                    // Create multiple particles per character
+                    const particlesPerChar = Math.floor(settings.particleCount / text.replace(/\s/g, '').length);
+                    
+                    for (let j = 0; j < particlesPerChar; j++) {
+                        particles.push(new Particle(
+                            x + (Math.random() - 0.5) * 20,
+                            startY + (Math.random() - 0.5) * 20,
+                            char,
+                            i * particlesPerChar + j
+                        ));
+                    }
+                }
+                
+                x += charWidth;
+            }
+        }
+
+        function animate() {
+            // Clear canvas with trail effect
+            ctx.fillStyle = 'rgba(15, 15, 35, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw particles
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        canvas.addEventListener('mousedown', () => {
+            mouse.down = true;
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            mouse.down = false;
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target !== document.getElementById('textInput')) {
+                e.preventDefault();
+                createParticles();
+            }
+        });
+
+        // Control event listeners
+        document.getElementById('textInput').addEventListener('input', createParticles);
+
+        document.querySelectorAll('.physics-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.physics-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                physicsMode = btn.dataset.mode;
+            });
+        });
+
+        document.querySelectorAll('[data-color]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                colorMode = btn.dataset.color;
+            });
+        });
+
+        // Range inputs
+        Object.keys(settings).forEach(key => {
+            const input = document.getElementById(key);
+            const valueSpan = document.getElementById(key + 'Value');
+            
+            if (input) {
+                input.addEventListener('input', () => {
+                    settings[key] = parseFloat(input.value);
+                    if (valueSpan) valueSpan.textContent = input.value;
+                    
+                    if (key === 'fontSize' || key === 'particleCount' || key === 'fontFamily') {
+                        createParticles();
+                    }
+                });
+            }
+        });
+
+        // Font family
+        document.getElementById('fontFamily').addEventListener('change', (e) => {
+            settings.fontFamily = e.target.value;
+            createParticles();
+        });
+
+        // Presets
+        document.querySelectorAll('[data-preset]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const preset = btn.dataset.preset;
+                
+                switch(preset) {
+                    case 'galaxy':
+                        physicsMode = 'orbit';
+                        colorMode = 'rainbow';
+                        settings.force = 8;
+                        settings.friction = 0.99;
+                        break;
+                    case 'storm':
+                        physicsMode = 'explosion';
+                        colorMode = 'fire';
+                        settings.force = 15;
+                        settings.friction = 0.95;
+                        break;
+                    case 'dance':
+                        physicsMode = 'wave';
+                        colorMode = 'neon';
+                        settings.force = 3;
+                        settings.friction = 0.98;
+                        break;
+                    case 'zen':
+                        physicsMode = 'fluid';
+                        colorMode = 'ice';
+                        settings.force = 2;
+                        settings.friction = 0.99;
+                        break;
+                }
+                
+                // Update UI
+                document.querySelectorAll('.physics-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector(`[data-mode="${physicsMode}"]`).classList.add('active');
+                
+                // Update sliders
+                document.getElementById('force').value = settings.force;
+                document.getElementById('forceValue').textContent = settings.force;
+                document.getElementById('friction').value = settings.friction;
+                document.getElementById('frictionValue').textContent = settings.friction;
+            });
+        });
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            createParticles();
+        });
+
+        // Initialize
+        createParticles();
+        animate();
+
+        // Minimize panel functionality
+        const controls = document.querySelector('.controls');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        let isMinimized = false;
+
+        minimizeBtn.addEventListener('click', () => {
+            isMinimized = !isMinimized;
+            controls.classList.toggle('minimized', isMinimized);
+            minimizeBtn.textContent = isMinimized ? '+' : '−';
+            minimizeBtn.title = isMinimized ? 'Expand panel' : 'Minimize panel';
+        });
+
+        // Auto-expand on hover when minimized
+        controls.addEventListener('mouseenter', () => {
+            if (isMinimized) {
+                controls.style.width = '340px';
+                controls.querySelector('.controls-content').style.opacity = '1';
+                controls.querySelector('.controls-content').style.pointerEvents = 'auto';
+                controls.querySelector('.controls-title').style.opacity = '1';
+                controls.querySelector('.controls-subtitle').style.opacity = '1';
+            }
+        });
+
+        controls.addEventListener('mouseleave', () => {
+            if (isMinimized) {
+                controls.style.width = '60px';
+                controls.querySelector('.controls-content').style.opacity = '0';
+                controls.querySelector('.controls-content').style.pointerEvents = 'none';
+                controls.querySelector('.controls-title').style.opacity = '0';
+                controls.querySelector('.controls-subtitle').style.opacity = '0';
+            }
+        });
+    </script>
+</body>
+</html>
